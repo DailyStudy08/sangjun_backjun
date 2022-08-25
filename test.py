@@ -1,83 +1,68 @@
 import sys
-<<<<<<< HEAD
-sys.stdin = open('input.txt')
-
-def dfs(start, graph, visit):
-    stack = graph[start]
-    while stack:
-        v = stack.pop()
-        if v == 99:
-            return 1
-        visit[v] = True
-        for i in graph[v]:
-            if not visit[i]:
-                stack.append(i)
-    return 0
-        
-
-for t in range(1, 11):
-    test, line = map(int, input().split())
-    graph = [[] for _ in range(100)]
-    visit = [False for _ in range(100)]
-    lst = list(map(int, input().split()))
-    for i in range(0, len(lst), 2):
-        graph[lst[i]].append(lst[i+1])
-    print(graph)
-    print(f'#{t} {dfs(0, graph, visit)}')
-=======
 sys.stdin = open('input.txt', 'r')
 
-n, m = map(int, input().split())
-arr = [list(map(int, input().split())) for _ in range(n)]
+def check(arr):
+    global ans
+    # 가로
+    for i in range(N):
+        cnt = 0
+        for j in range(N):
+            if arr[i][j] == 'o':
+                cnt += 1
+                if cnt >= 5:
+                    ans = 'YES'
+                    return
+            else:
+                cnt = 0
+    
+    # 세로
+    for j in range(N):
+        cnt = 0
+        for i in range(N):
+            if arr[i][j] == 'o':
+                cnt += 1
+                if cnt >= 5:
+                    ans = 'YES'
+                    return
+            else:
+                cnt = 0
 
-block_i = [[0, 0, -1, -1], [0, -1, -1, -2], [0, -1, -1, -2], [0, 0, -1, -1], [0, 0, -1, -1]]      #  노란색, 초록색(4) 테트로미노
-block_j = [[0, 1, 1, 0], [0, 0, 1, 1], [0, 0, -1, -1], [0, 1, 0, -1], [0, 1, 1, 2]]
+    # 대각석 우측방향
+    visited = [[0] * N for _ in range(N)]
+    for i in range(N):
+        for j in range(N):
+            y, x = i, j
+            cnt = 0
+            while 0 <= y < N and 0 <= x < N and arr[y][x] == 'o' and visited[y][x] == 0:
+                visited[y][x] = 1
+                cnt += 1
+                if cnt >= 5:
+                    ans = 'YES'
+                    return
+                y += 1
+                x += 1
 
-max_total = 0
-for i in range(n):
-    for j in range(m):
-        for block in range(5):
-            total = 0
-            for k in range(4):
-                ni = i + block_i[block][k]
-                nj = j + block_j[block][k]
-                if 0 <= ni < n and 0 <= nj < m:
-                    total += arr[ni][nj]
-                    if total > max_total:
-                        max_total = total
+    # 대각선 좌축 방향
+    visited = [[0] * N for _ in range(N)]
+    for i in range(N):
+        for j in range(N):
+            y, x = i, j
+            cnt = 0
+            while 0 <= y < N and 0 <= x < N and arr[y][x] == 'o' and visited[y][x] == 0:
+                visited[y][x] = 1
+                cnt += 1
+                if cnt >= 5:
+                    ans = 'YES'
+                    return
+                y += 1
+                x -= 1
 
-# 파랑, 주황, 핑크 - 세개짜리 막대기 두고 한개씩 붙이기(가로)
-di = [1, 1, 1, 0, -1, -1, -1]
-dj = [0, 1, 2, 3, 2, 1, 0]
 
-for i in range(n):
-    for j in range(m):
-        for k in range(7):
-            total2 = 0
-            plus = 0
-            ni = i + di[k]
-            nj = j + dj[k]
-            if 0 <= ni < n and 0 <= nj < m and 0 <= j+2 < m:
-                plus = arr[ni][nj]
-                total2 += plus + sum(arr[i][j:j + 3])
-                if total2 > max_total:
-                    max_total = total2
 
-# 파랑, 주황, 핑크 - 세개짜리 막대기 두고 한개씩 붙이기(세로)
-ci = [0, 1, 2, 3, 2, 1, 0]
-cj = [1, 1, 1, 0, -1, -1, -1]
-for i in range(n):
-    for j in range(m):
-        for k in range(7):
-            total3 = 0
-            plus3 = 0
-            nni = i + ci[k]
-            nnj = j + cj[k]
-            if 0 <= nni < n and 0 <= nnj < m and 0 <= i+2 < n:
-                plus3 = arr[nni][nnj]
-                total3 += plus3 + (arr[i][j] + arr[i + 1][j] + arr[i + 2][j])
-                if total3 > max_total:
-                    max_total = total3
-
-print(max_total)
->>>>>>> f8df509b31d0cfa25d5ef6c33d5ec286fbe1a4c6
+T = int(input())
+for tc in range(1, T + 1):
+    N = int(input())
+    arr = [list(input()) for _ in range(N)]
+    ans = 'NO'
+    check(arr)
+    print(f'#{tc} {ans}')
